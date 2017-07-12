@@ -1,0 +1,101 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="mg-tab-view">
+	<template>
+		<style>
+			#container {
+				display: flex;
+				flex-direction: row;
+			}
+			.header {
+				padding: 3% 3% 0 3%;
+				width: 100%;
+				text-align: center;
+				color: #33B6B1;
+			}
+			.header[selected] {
+				border-style: solid;
+				border-width: 0 0 3px 0;
+				border-color: #33B6B1;
+			}
+		</style>
+		<div id="container">
+			<template is="dom-repeat" items="[[headers]]">
+				<div class="header" id="[[item.id]]" on-tap="_headerTapped">[[item.title]]</div>
+			</template>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'mg-tab-view',
+
+			properties: {
+
+				/**
+				 * header를 설정하기 위한 attribute
+				 */
+				headers: {
+					type: Array
+				},
+
+				/**
+				 * 최초 선택되어 있는 tab의 id
+				 * @type String
+				 */
+				selected: {
+					type: String
+				}
+			},
+
+			/**
+			 * 처음 포커싱 되어 있는 텝을 결정하기 위해 컴퍼넌트가 Ready 된 이후 실행된다.
+			 * dom-repeat의 변화가 감지되면 container 이하의 엘리먼트를 추출하고 아이디가 selected의 값으로 들어 온 것을 찾아 
+			 * selected attribute를 true로 설정한다.
+			 */
+			ready: function() {
+				this.addEventListener('dom-change', function(event) {
+					var selectedItemId = this.getAttribute('selected');
+					var headers = this.querySelectorAll('.header');
+					
+					headers.forEach(function(header) {
+						if(header.id == selectedItemId) {
+							header.setAttribute('selected', true);
+						} else {
+							header.removeAttribute('selected');
+						}
+					});
+				})
+			},
+
+			/**
+			 * header tab이 선택되었을 때 실행됨
+			 * 선택한 header의 selected를 true로 변경하고 나머지의 selected를 제거함
+			 * mg-tab-view-changed 이벤트를 호출하며 event의 값으로 선택한 element를 전달함
+			 */
+			_headerTapped: function(event) {
+				var container = this.$['container'];
+				var headers = container.querySelectorAll('.header');
+
+				headers.forEach(function(header) {
+					if(header.id == event.target.id) {
+						header.setAttribute('selected', true);
+					} else {
+						header.removeAttribute('selected');
+					}
+				}.bind(this));
+
+				this.fire('mg-tab-view-changed' event.target);
+			},
+
+			/**
+			 * appendTab의 인자로 element를 받아 마지막 텝에 추가함
+			 * @param  element element
+			 * @TODO: 원하는 위치에 append 할 수 있도록
+			 */
+			appendTab: function(element) {
+				this.$['container'].appendChild(element);
+
+			}
+		})
+	</script>
+</dom-module>

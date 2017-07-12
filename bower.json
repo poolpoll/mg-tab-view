@@ -1,0 +1,17 @@
+{
+  "name": "mg-tab-view",
+  "authors": [
+    "Jay Lee <jaylee.possible@gmail.com>"
+  ],
+  "description": "",
+  "main": "mg-tab-view.html",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
